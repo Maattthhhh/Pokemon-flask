@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        @import url('http://fonts.cdnfonts.com/css/pokemon-solid');
+        body{
+            text-align: center;
+        }
+        .letter{
+            font-family: 'Pokemon Solid', sans-serif;
+            display: inline-block;
+            letter-spacing: 5px;
+            font-size: 50px;
+            color: #ffcb05;
+            text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
+        }
+        .letter.active{
+            transform: scale(1.5) rotate(20deg);
+        }
+        h1{
+            display: inline-block;            
+        }
+        img {
+            display: inline-block;
+            height: 100px;
+            width: 100px;
+        }
+        #myImage {
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: #fff 4px 4px 0 0, #000 4px 4px 0 1px;
+            text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
+        }   
+        #bach:hover{
+            animation-name: bosch;
+            animation-duration: 1.2s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            filter: brightness(100%);
+        }
+        @keyframes bosch{
+            0%{
+                transform: rotate(0deg);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+        }
+        .vastolorde {
+            appearance: button;
+            background-color:red;
+            background-image: none;
+            border: 1px solid #000;
+            border-radius: 4px;
+            box-shadow: #fff 4px 4px 0 0,#000 4px 4px 0 1px;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            display: inline-block;
+            font-family: 'Pokemon Solid', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 10px;
+            line-height: 20px;
+            margin: 0 5px 10px 0;
+            overflow: visible;
+            padding: 12px 40px;
+            text-align: center;
+            text-transform: none;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            vertical-align: middle;
+            white-space: nowrap;
+            }
+
+        .vastolorde:active {
+            box-shadow: rgba(0, 0, 0, .125) 0 3px 5px inset;
+            outline: 0;
+        }
+
+        .vastolorde:not([disabled]):active {
+            box-shadow: #fff 2px 2px 0 0, red 2px 2px 0 1px;
+            transform: translate(2px, 2px);
+        }
+
+        @media (min-width: 768px) {
+        .vastolorde {
+            padding: 12px 50px;
+        }
+        }
+        #pokedex {
+            position: absolute;
+            top: calc(20% + 95px);
+            right: 5%;
+            height: 400px;
+            width: 400px;
+            overflow: 500px;
+            overflow-y: auto;
+            align-items: center;
+            letter-spacing: 5px;
+            font-size: 20px;
+            color: #ffcb05;
+            text-shadow: -1.5px 0 black, 0 1.5px black, 1.5px 0 black, 0 -1.5px black;
+            display: inline-block;
+
+        }
+        #pokemonInfo {
+            font-family: 'Pokemon Solid', sans-serif;
+            display: inline-block;
+            letter-spacing: 5px;
+            font-size: 25px;
+            color: #ffcb05;
+            text-shadow: -1.5px 0 black, 0 1.5px black, 1.5px 0 black, 0 -1.5px black;
+            text-align: center;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        #myImage {
+            margin-right: 10px;
+            box-shadow: #fff 4px 4px 0 0, #000 4px 4px 0 1px;
+            text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/jpg" sizes="16x16" href="static/pokeball.jpg">
+        <script src="{{ url_for('static', filename='pokemon_dictionary.js') }}"></script>
+    </head>
+        <img src="static/pokeball.jpg" id="bach">
+        <h1><span class="js-letter">Pokémon!</span></h1>
+        <br>
+        <span id="pokemonInfo">
+            <p></p>
+        </span>
+        <div class="container">
+            <a href="https://maattthhhh.github.io/Tracking-ISS/tracking_iss.html"><img id="myImage" src="static/pikachu.gif" style="width:300px; height: 300px"></a>
+        </div>
+            <div id="pokedex">
+                {{ cleaned_text }}
+            </div>
+        <br>
+        <button onclick="gary()" class="vastolorde">Generate Random Pokémon!</button>
+        <script>
+            function gary(){
+                const AD = Math.ceil(Math.random()*150);
+                const myPokemon = mapping[AD];
+                var brock = document.getElementById("myImage");
+                let misty = 0
+                while (misty < 150){
+                    brock.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/"+AD+".png";
+                    misty++;
+                }
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        document.getElementById("pokedex").innerHTML = "<br><p>" + response.cleaned_text + "</p><br>";
+                    }
+                }
+                xhr.open('GET', '/get_pokemon?pokemonName=' + myPokemon, true);
+                xhr.send();
+
+                checkPokemon(myPokemon)
+            }
+        </script>
+        <script>
+            const h1 = document.querySelector("h1")
+            const letters = h1.innerText.split('')
+            let html = ""
+            letters.forEach(letter=>{
+                let classes = ''
+                if(letter!==' '){
+                    classes = 'letter js-letter'
+                }
+                html = html + `<span class ="${classes}">${letter}</span>`
+            })
+            h1.innerHTML = html
+            const jsLetters = document.querySelectorAll(".js-letter")
+            jsLetters.forEach(node=>{
+                node.addEventListener("mouseover", function(event){
+                    this.classList.add("active")
+                })
+                node.addEventListener("mouseout", function(event){
+                    this.classList.remove("active")
+                })
+            })
+        </script>
+        <script>
+            const tableBody = document.querySelector('#data-table tbody');
+            for (const key in mapping) {
+            if (mapping.hasOwnProperty(key)) {
+                const value = mapping[key];
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${key}</td><td><a href="https://pokemondb.net/pokedex/${value}" target="_blank">${value}</a></td>`
+                tableBody.appendChild(row);
+            }
+            }
+        </script>
+        <script>
+            function toggleDropdown() {
+                var dropdownContent = document.getElementById("dropdownContent");
+                dropdownContent.classList.toggle("show");
+            }
+            window.onclick = function(event) {
+                if (!event.target.matches('#dropdownButton')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    var i;
+                    for (i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+        </script>
+    <body style="background-color:powderblue;">
+</html>

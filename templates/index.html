@@ -92,21 +92,25 @@
             padding: 12px 50px;
         }
         }
-        #pokedex {
+        #pokedex, #nihongo, #niponjin {
             position: absolute;
-            top: calc(20% + 95px);
             right: 5%;
-            height: 400px;
             width: 400px;
-            overflow: 500px;
-            overflow-y: auto;
-            align-items: center;
             letter-spacing: 5px;
             font-size: 20px;
             color: #ffcb05;
             text-shadow: -1.5px 0 black, 0 1.5px black, 1.5px 0 black, 0 -1.5px black;
-            display: inline-block;
-
+        }
+        #nihongo{
+            top: calc(15% + 90px);
+        }
+        #niponjin {
+            top: calc(20% + 90px);
+        }
+        #pokedex {
+            top: calc(20% + 145px);
+            height: 400px;
+            overflow-y: auto;
         }
         #pokemonInfo {
             font-family: 'Pokemon Solid', sans-serif;
@@ -134,7 +138,7 @@
             position: absolute;
             top: 100px;
             left: 20%;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: stretch;
             gap: 10px;
@@ -143,7 +147,6 @@
             font-family: 'Pokemon Solid', sans-serif;
             padding: 10px 20px;
             border: 2px solid #000;
-            background-color: #fff; 
             cursor: pointer;
         }
     </style>
@@ -157,24 +160,36 @@
         <img src="static/pokeball.jpg" id="bach">
         <h1>Pokémon!</h1>
         <br>
-        <div id="pokemonInfo"></div>
+        <br>
         <div>
             <a href="https://maattthhhh.github.io/Tracking-ISS/tracking_iss.html"><img id="myImage" src="static/pikachu.gif" style="width:300px; height: 300px"></a>
         </div>
+        <div id="pokemonInfo"></div>
+        <br>
+        <p id="nihongo"></p>
+        <br>
+        <p id="niponjin"></p>
         <div id="pokedex">
             {{ cleaned_text }}
         </div>
         <br>
-        <div id="sizeSelector" hidden class="selectyourversion">
-            <button id="prevSize">Silver</button>
-            <button id="presSize">Crystal</button>
-            <button id="nextSize">Gold</button>
+        <div id="sizeSelector" class="selectyourversion">
+            <button id="prevSize" style="background-color: #4a5568;">Silver</button>
+            <button id="presSize" style="background-color: #a7d8de;">Crystal</button>
+            <button id="nextSize" style="background-color: #ffd700;">Gold</button>
         </div>
         <button onclick="gary()" class="vastolorde">Generate Random Pokémon!</button>
         <script>
+            let intervalId;
             function gary(){
                 const AD = Math.ceil(Math.random()*150);
                 const myPokemon = mapping[AD];
+                const digimon = [
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/silver/" + AD + ".png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/" + AD + ".png",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/gold/" + AD + ".png"
+                ]
+                var avatar = document.querySelector(".selectyourversion");
                 var brock = document.getElementById("myImage");
                 let misty = 0
                 while (misty < 150){
@@ -193,15 +208,152 @@
 
                 checkPokemon(myPokemon)
                 document.getElementById("prevSize").onclick = function() {
+                    clearInterval(intervalId);
                     brock.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/silver/" + AD + ".png";
                 };
                 document.getElementById("presSize").onclick = function() {
+                    clearInterval(intervalId);
                     brock.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/" + AD + ".png";
                 };
                 document.getElementById("nextSize").onclick = function() {
+                    clearInterval(intervalId);
                     brock.src = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/gold/" + AD + ".png";
                 };
+                clearInterval(intervalId);
+                let index = 0;
+                intervalId = setInterval(function() {
+                    index = (index + 1) % digimon.length;
+
+                    document.getElementById("myImage").src = digimon[index];
+
+                }, 500);
+                avatar.style.display = "flex";
+            
+            
+            const katakanaToRomaji = {
+                // Basic vowels
+                'ア': 'a', 'イ': 'i', 'ウ': 'u', 'エ': 'e', 'オ': 'o',
+
+                // K
+                'カ': 'ka', 'キ': 'ki', 'ク': 'ku', 'ケ': 'ke', 'コ': 'ko',
+
+                // S
+                'サ': 'sa', 'シ': 'shi', 'ス': 'su', 'セ': 'se', 'ソ': 'so',
+
+                // T
+                'タ': 'ta', 'チ': 'chi', 'ツ': 'tsu', 'テ': 'te', 'ト': 'to',
+
+                // N
+                'ナ': 'na', 'ニ': 'ni', 'ヌ': 'nu', 'ネ': 'ne', 'ノ': 'no',
+
+                // H
+                'ハ': 'ha', 'ヒ': 'hi', 'フ': 'fu', 'ヘ': 'he', 'ホ': 'ho',
+
+                // M
+                'マ': 'ma', 'ミ': 'mi', 'ム': 'mu', 'メ': 'me', 'モ': 'mo',
+
+                // Y
+                'ヤ': 'ya', 'ユ': 'yu', 'ヨ': 'yo',
+
+                // R
+                'ラ': 'ra', 'リ': 'ri', 'ル': 'ru', 'レ': 're', 'ロ': 'ro',
+
+                // W and N
+                'ワ': 'wa', 'ヲ': 'wo', 'ン': 'n',
+
+                // Voiced K
+                'ガ': 'ga', 'ギ': 'gi', 'グ': 'gu', 'ゲ': 'ge', 'ゴ': 'go',
+
+                // Voiced S
+                'ザ': 'za', 'ジ': 'ji', 'ズ': 'zu', 'ゼ': 'ze', 'ゾ': 'zo',
+
+                // Voiced T
+                'ダ': 'da', 'ヂ': 'ji', 'ヅ': 'zu', 'デ': 'de', 'ド': 'do',
+
+                // Voiced H (B)
+                'バ': 'ba', 'ビ': 'bi', 'ブ': 'bu', 'ベ': 'be', 'ボ': 'bo',
+
+                // Semi-voiced H (P)
+                'パ': 'pa', 'ピ': 'pi', 'プ': 'pu', 'ペ': 'pe', 'ポ': 'po',
+
+                // V sound
+                'ヴ': 'vu',
+
+                // Small vowels
+                'ァ': 'a', 'ィ': 'i', 'ゥ': 'u', 'ェ': 'e', 'ォ': 'o',
+
+                // Small Y
+                'ャ': 'ya', 'ュ': 'yu', 'ョ': 'yo',
+
+                // Other small characters
+                'ヮ': 'wa', 'ヵ': 'ka', 'ヶ': 'ke',
+
+                // Obsolete characters
+                'ヰ': 'wi', 'ヱ': 'we',
+
+                // Small tsu: requires special handling in your conversion function
+                'ッ': '',
+
+                // Long vowel mark: requires special handling depending on your rules
+                'ー': '',
+
+                // Common two-character combinations
+                'キャ': 'kya', 'キュ': 'kyu', 'キョ': 'kyo',
+                'シャ': 'sha', 'シュ': 'shu', 'ショ': 'sho',
+                'チャ': 'cha', 'チュ': 'chu', 'チョ': 'cho',
+                'ニャ': 'nya', 'ニュ': 'nyu', 'ニョ': 'nyo',
+                'ヒャ': 'hya', 'ヒュ': 'hyu', 'ヒョ': 'hyo',
+                'ミャ': 'mya', 'ミュ': 'myu', 'ミョ': 'myo',
+                'リャ': 'rya', 'リュ': 'ryu', 'リョ': 'ryo',
+                'ギャ': 'gya', 'ギュ': 'gyu', 'ギョ': 'gyo',
+                'ジャ': 'ja', 'ジュ': 'ju', 'ジョ': 'jo',
+                'ヂャ': 'ja', 'ヂュ': 'ju', 'ヂョ': 'jo',
+                'ビャ': 'bya', 'ビュ': 'byu', 'ビョ': 'byo',
+                'ピャ': 'pya', 'ピュ': 'pyu', 'ピョ': 'pyo',
+
+                // Common foreign-word combinations
+                'シェ': 'she', 'ジェ': 'je', 'チェ': 'che',
+                'ティ': 'ti', 'ディ': 'di',
+                'トゥ': 'tu', 'ドゥ': 'du',
+                'ツァ': 'tsa', 'ツィ': 'tsi', 'ツェ': 'tse', 'ツォ': 'tso',
+                'ファ': 'fa', 'フィ': 'fi', 'フェ': 'fe', 'フォ': 'fo',
+                'フュ': 'fyu',
+                'ウィ': 'wi', 'ウェ': 'we', 'ウォ': 'wo',
+                'ヴァ': 'va', 'ヴィ': 'vi', 'ヴェ': 've', 'ヴォ': 'vo',
+                'ヴュ': 'vyu',
+                'イェ': 'ye',
+                'キェ': 'kye', 'ギェ': 'gye',
+                'クァ': 'kwa', 'クィ': 'kwi', 'クェ': 'kwe', 'クォ': 'kwo',
+                'グァ': 'gwa', 'グィ': 'gwi', 'グェ': 'gwe', 'グォ': 'gwo'
+            };
+
+            function convertToRomajiFallback(katakanaStr) {
+                if (!katakanaStr) return "Romaji not found";
+                return katakanaStr.split('').map(char => katakanaToRomaji[char] || char).join('');
             }
+            async function getPokemon() {
+                const req = await fetch(
+                    "https://pokeapi.co/api/v2/pokemon/" + myPokemon
+                );
+                if (req.ok) {
+                    const ash = await req.json();
+                    const speciesReq = await fetch(ash.species.url);
+                    const species = await speciesReq.json();
+                    const japanese = species.names.find(
+                        name => name.language.name === "ja"
+                    );
+                    let roomaji = species.names.find(
+                        name => name.language.name === "roomaji"
+                    );
+                    let finalRomaji = roomaji ? roomaji.name : null;
+                    if (!finalRomaji && japanese) {
+                        finalRomaji = convertToRomajiFallback(japanese.name);
+                        document.getElementById("niponjin").innerHTML = `Romaji: ${finalRomaji.charAt(0).toUpperCase() + finalRomaji.slice(1)}`
+                    }
+                    document.getElementById("nihongo").innerHTML = japanese ? `Japanese Name: ${japanese.name}` : "Japanese name not found";
+            }}
+            getPokemon();
+        }
         </script>
         <script>
             const h1 = document.querySelector("h1")

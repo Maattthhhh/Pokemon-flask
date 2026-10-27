@@ -96,21 +96,30 @@
             position: absolute;
             right: 5%;
             width: 400px;
-            letter-spacing: 5px;
-            font-size: 20px;
-            color: #ffcb05;
-            text-shadow: -1.5px 0 black, 0 1.5px black, 1.5px 0 black, 0 -1.5px black;
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            color: #333;
+            text-shadow: none;
+            font-weight: normal;
+            text-align: center;
+            letter-spacing: 1px;
+            line-height: 1.4;
         }
-        #nihongo{
+        #nihongo {
             top: calc(15% + 90px);
+            font-size: 20px;
+            transform: translateY(-48px)
         }
         #niponjin {
             top: calc(20% + 90px);
+            font-size: 20px;
+            transform: translateY(-48px)
         }
         #pokedex {
             top: calc(20% + 145px);
             height: 400px;
             overflow-y: auto;
+            font-size: 17px;
+            transform: translateY(-48px)
         }
         #pokemonInfo {
             font-family: 'Pokemon Solid', sans-serif;
@@ -149,6 +158,41 @@
             border: 2px solid #000;
             cursor: pointer;
         }
+        body {
+            background-color: powderblue;
+        }
+        body.bursted {
+            background-image: url('static/bubbly.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .takeshi{
+            position: fixed;
+            bottom: 1px;
+            right: -150px; 
+            width: 767px;
+            height: 767px;
+            box-sizing: border-box;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            border: none;
+            background-color: transparent;
+        }
+        #castImage {
+            position: absolute;
+            bottom: 0;
+            right: -2in; 
+            width: 115%; 
+            max-height: 250%; 
+            object-fit: contain; 
+            margin: 0;
+            display: none;
+        }
     </style>
     <head>
         <meta charset="UTF-8">
@@ -172,7 +216,6 @@
         <div id="pokedex">
             {{ cleaned_text }}
         </div>
-        <br>
         <div id="sizeSelector" class="selectyourversion">
             <button id="prevSize" style="background-color: #4a5568;">Silver</button>
             <button id="presSize" style="background-color: #a7d8de;">Crystal</button>
@@ -189,6 +232,9 @@
                     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/" + AD + ".png",
                     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/gold/" + AD + ".png"
                 ]
+                const maincast = [
+                    'static/ash.png', 'static/misty.png', 'static/brock.png', 'static/jessie.png', 'static/james.png', 'static/gary.png', 'static/oak.png', 'static/delia.png'
+                ]
                 var avatar = document.querySelector(".selectyourversion");
                 var brock = document.getElementById("myImage");
                 let misty = 0
@@ -200,7 +246,7 @@
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         var response = JSON.parse(xhr.responseText);
-                        document.getElementById("pokedex").innerHTML = "<br><p>" + response.cleaned_text + "</p><br>";
+                        document.getElementById("pokedex").innerHTML = "<p>" + response.cleaned_text + "</p><br>";
                     }
                 }
                 xhr.open('GET', '/get_pokemon?pokemonName=' + myPokemon, true);
@@ -228,7 +274,16 @@
 
                 }, 500);
                 avatar.style.display = "flex";
-            
+                function showRandomPic() {
+                    // 1. Generate a random index between 0 and the length of the array
+                    const randomIndex = Math.floor(Math.random() * maincast.length);
+                    
+                    // 2. Get the image element by its ID
+                    const imgElement = document.getElementById('castImage')
+                    imgElement.style.display = 'block';
+                    imgElement.src = maincast[randomIndex];
+                }
+                showRandomPic()
             
             const katakanaToRomaji = {
                 // Basic vowels
@@ -339,6 +394,7 @@
                     const ash = await req.json();
                     const speciesReq = await fetch(ash.species.url);
                     const species = await speciesReq.json();
+                    document.body.classList.add("bursted");
                     const japanese = species.names.find(
                         name => name.language.name === "ja"
                     );
@@ -395,5 +451,10 @@
                 }
             }
         </script>
-    <body style="background-color:powderblue;">
+    <body>
+        <div class="takeshi">
+            <!-- The image tag where the random picture will show -->
+            <img id="castImage" src="static/ash.png" alt="Cast Member" style="display: none;">
+        </div>
+    </body>
 </html>

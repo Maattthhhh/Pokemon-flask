@@ -15,6 +15,16 @@ def index():
 @app.route('/get_pokemon')
 def get_pokemon():
     AD = request.args.get('pokemonName')
+    ketchum = AD.lower()
+    req = requests.get("https://pokeapi.co/api/v2/pokemon/"+ketchum)
+
+    if req.status_code == 200:
+        ash = req.json()
+        abilities = []
+        for ability in ash['abilities']:
+            abilities.append(ability['ability']['name'])
+    else:
+        return jsonify(cleaned_text="Pokemon not found!")
     my_url = "https://pokemondb.net/pokedex/" + AD
     headers = {
         "User-Agent": "Maattthhhh ({my_email}) Python-requests"
@@ -36,7 +46,7 @@ def get_pokemon():
                 print()
                 print(cleaned_text)
                 print()
-        return jsonify(cleaned_text=cleaned_text)
+        return jsonify(cleaned_text=cleaned_text, abilities=abilities)
     except Exception as e:
         return jsonify(cleaned_text=f"An error occurred: {str(e)}")
 
